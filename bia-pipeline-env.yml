@@ -5,6 +5,10 @@
     - soft_dir: /software/apps
     - modules_dir: /software/modules
     - ref_dir: /references
+    - incoming_data_dir: /data/prod/incoming
+    - test_data_dir: /data/test/raw_data
+    - results_dir: /results/prod
+    - test_results_dir: /results/test
 
   pre_tasks:
     - name: Create necessary dirs
@@ -16,6 +20,10 @@
         - "{{soft_dir}}"
         - "{{modules_dir}}"
         - "{{ref_dir}}"
+        - "{{incoming_data_dir}}"
+        - "{{test_data_dir}}"
+        - "{{results_dir}}"
+        - "{{test_results_dir}}"
       
   tasks:
     - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
@@ -29,7 +37,7 @@
     - include: tasks/SPAdes.yml tags=spades version=3.9.0
     - include: tasks/quast.yml tags=quast version=4.5
 
-    - include: tasks/bia-pipeline.yml tags=biapipeline repo=https://github.com/seru71/bia-pipeline.git version=HEAD
+    - include: tasks/bia-pipeline.yml tags=biapipeline repo=https://github.com/seru71/zao-bia-pipeline.git version=HEAD
     
 #    - include: tasks/bwa.yml tags=bwa
 #    - include: tasks/htslib.yml tags=htslib version=1.3.1
