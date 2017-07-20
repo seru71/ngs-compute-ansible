@@ -1,0 +1,5 @@
+- git:
+    repo: "{{ repo }}"
+    dest: "{{ soft_dir }}/bia-pipeline"
+    version: "{{ version }}"
+
