@@ -4,11 +4,13 @@
     - source_dir: /software/src
     - soft_dir: /software/apps
     - modules_dir: /software/modules
-    - ref_dir: /references
-    - incoming_data_dir: /data/prod/incoming
-    - test_data_dir: /data/test/raw_data
-    - results_dir: /results/prod
-    - test_results_dir: /results/test
+    - ref_dir: /prod/reference
+    - incoming_data_dir: /prod/incoming
+    - work_dir: /prod/scratch
+    - archive_dir: /prod/archive
+    - test_data_dir: /test/raw_data
+    - test_work_dir: /test/scratch
+    - test_archive: /test/archive
 
   pre_tasks:
     - name: Create necessary dirs
@@ -21,9 +23,11 @@
         - "{{modules_dir}}"
         - "{{ref_dir}}"
         - "{{incoming_data_dir}}"
+        - "{{work_dir}}"
+        - "{{archive_dir}}"
         - "{{test_data_dir}}"
-        - "{{results_dir}}"
-        - "{{test_results_dir}}"
+        - "{{test_work_dir}}"
+        - "{{test_archive_dir}}"
       
   tasks:
     - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
