@@ -36,11 +36,6 @@
     - zip
     - zlib1g-dev
 #######
-#   Pipeline
-#####
-    - python-ruffus
-    - python-drmaa
-#######
 #   Module management
 ######
     - lua5.2

@@ -1,5 +1,29 @@
+# Install dependencies
+
+- name: Update APT cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: true
+  become_user: root
+
+- name: Install packages
+  apt: pkg={{item}} state=present
+  become: true
+  become_user: root
+  with_items:
+    - python-ruffus
+    - python-drmaa
+    - slurm-drmaa1
+
+
+# Set up env variable from SLURM-DRMAA
+- name: set DRMAA_LIBRARY_PATH env varianble
+  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ansible_user_id}}/.bash_profile
+
+
+# Clone pipeline repo
 - git:
     repo: "{{ repo }}"
     dest: "{{ soft_dir }}/bia-pipeline"
     version: "{{ version }}"
+
 
