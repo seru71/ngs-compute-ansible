@@ -1,0 +1,129 @@
+
+# Download bcl2fastq
+
+- name: Download bcl2fastq
+  get_url:
+    url: ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/software/bcl2fastq/bcl2fastq2-v{{version}}-tar.zip
+    dest: "{{source_dir}}/bcl2fastq-{{version}}.zip"
+
+- name: Unzip bcl2fastq
+  unarchive: 
+    src: "{{ source_dir }}/bcl2fastq-{{version}}.zip"
+    dest: "{{ source_dir }}"
+    copy: no
+    creates: "{{ source_dir }}/bcl2fastq2-v{{version}}.403.tar.gz"
+
+- name: Untar bcl2fastq
+  unarchive: 
+    src: "{{ source_dir }}/bcl2fastq2-v{{version}}.403.tar.gz"
+    dest: "{{ soft_dir }}"
+    copy: no
+    creates: "{{ soft_dir }}/bcl2fastq"
+
+
+# Install libboost1.58
+
+
+- name: Update APT cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: true
+  become_user: root
+
+- name: Install libboost
+  apt: pkg=libboost-all-dev state=present
+  become: true
+  become_user: root
+  
+
+# Link stat.h header where bcl2fastq expects it
+- name: Make sys dir
+  file: path=/usr/include/sys state=directory mode=u+w,a+rx
+  become: true
+  become_user: root
+
+- name: Link stat.h
+  file: path=/usr/include/sys/stat.h state=link src=/usr/include/x86_64-linux-gnu/sys/stat.h
+  become: true
+  become_user: root
+
+
+
+# Create build dir configure
+
+- file: path="{{ soft_dir }}/bcl2fastq-build" state=directory mode=ug+rwx
+
+- name: Configure the build
+  command: "{{ soft_dir }}/bcl2fastq/src/configure --prefix={{ soft_dir }}/bcl2fastq-{{ version }}"
+  args: 
+    chdir: "{{ soft_dir }}/bcl2fastq-build"
+ 
+# Uninstall libboost1.58 and install libboost1.54 to make XML libraries
+ 
+- name: Uninstall libboost1.58
+  apt: pkg=libboost-all-dev state=absent autoremove=yes
+  become: true
+  become_user: root
+
+#
+#
+# ADD TRUSTY repo to sources.list to make version 1.54 of BOOST available
+#
+#
+
+- name: Install libboost1.54-dev
+  apt: pkg=libboost1.54-dev state=present
+  become: true
+  become_user: root
+
+
+# make IO libs
+
+- name: Make IO target
+  command: make bcl2fastq_io chdir="{{ soft_dir }}/bcl2fastq-build"
+
+
+
+
+# Uninstall libboost1.54 and install 1.58 to continue the build
+
+- name: Uninstall libboost1.54-dev
+  apt: pkg=libboost1.54-dev state=absent autoremove=yes
+  become: true
+  become_user: root
+
+
+- name: Install libboost
+  apt: pkg=libboost-all-dev state=present
+  become: true
+  become_user: root
+
+# Continue building
+
+- name: Make all
+  command: make chdir="{{ soft_dir }}/bcl2fastq-build"
+  
+- name: Install
+  command: make install chdir="{{ soft_dir }}/bcl2fastq-build"
+  
+    
+
+
+# Cleanup after the build
+
+
+
+#
+#
+#
+#	REMOVE TRUSTY FROM SOURCES.LIST
+#
+#
+
+#- name: CHMOD the install dir
+#  file: path={{ soft_dir }}/bcl2fastq-{{ version }} owner={{ ansible_user_id }} group={{ ansible_user_id }} recursive=yes
+
+#- name: Cleanup build dirs
+#  file: path="{{ item }}" state=absent
+#  with_items:
+#    - "{{ soft_dir }}/bcl2fastq"
+#    - "{{ soft_dir }}/bcl2fastq-build"
