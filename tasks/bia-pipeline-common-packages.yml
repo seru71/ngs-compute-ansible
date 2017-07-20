@@ -47,3 +47,7 @@
     - liblua5.2-dev
     - lua-filesystem
     - lua-posix
+#######
+#   FS management
+######
+    - cifs-utils
