@@ -1,0 +1,24 @@
+- name: Download QUAST
+  get_url:
+    url=https://downloads.sourceforge.net/project/quast/quast-{{version}}.tar.gz
+    dest={{source_dir}}/quast-{{version}}.tar.gz
+
+- name: Uncompress Quast
+  unarchive: 
+    src={{ source_dir }}/quast-{{version}}.tar.gz 
+    dest={{ soft_dir }}
+    copy=no
+    creates={{ soft_dir }}/quast-{{version}}/quast.py
+
+#- file: dest="{{modules_dir}}/bio/quast" state=directory mode=0755
+
+#- name: Quast module definition
+#  template: 
+#    src: templates/sw-module.lua.j2 
+#    dest: "{{ modules_dir }}/bio/quast/{{version}}.lua"
+#    owner: root 
+#    mode: 0644
+#  with_items:
+#    - { help_text: 'This module loads the genome assembly QC tool - QUAST', dir: 'quast-{{version}}' }
+
+
