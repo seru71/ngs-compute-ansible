@@ -10,7 +10,7 @@
     - archive_dir: /prod/archive
     - test_data_dir: /test/raw_data
     - test_work_dir: /test/scratch
-    - test_archive: /test/archive
+    - test_archive_dir: /test/archive
 
   pre_tasks:
     - name: Create necessary dirs
