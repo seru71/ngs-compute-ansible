@@ -17,7 +17,7 @@
 
 # Set up env variable from SLURM-DRMAA
 - name: set DRMAA_LIBRARY_PATH env varianble
-  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ansible_user_id}}/.bash_profile
+  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ansible_user_id}}/.bashrc
 
 
 # Clone pipeline repo
