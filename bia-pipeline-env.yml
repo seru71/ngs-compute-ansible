@@ -5,8 +5,8 @@
     - soft_dir: /ngs/software/apps
     - modules_dir: /ngs/software/modules
     - ref_dir: /ngs/prod/reference
-    #- incoming_data_dir: /prod/incoming
-    - data_dir: /ngs/prod/data_tmp
+    - incoming_data_dir: /mnt/data/miseq_incoming
+    #- data_dir: /ngs/prod/data_tmp
     - work_dir: /ngs/prod/scratch
     - archive_dir: /ngs/prod/archive
     - test_data_dir: /ngs/test/raw_data
