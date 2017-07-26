@@ -23,7 +23,6 @@
 
 # Install libboost1.58
 
-
 - name: Update APT cache
   apt: update_cache=yes cache_valid_time=3600
   become: true
@@ -47,8 +46,7 @@
   become_user: root
 
 
-
-# Create build dir configure
+# Create build dir and configure
 
 - file: path="{{ soft_dir }}/bcl2fastq-build" state=directory mode=ug+rwx
 
@@ -57,6 +55,7 @@
   args: 
     chdir: "{{ soft_dir }}/bcl2fastq-build"
  
+ 
 # Uninstall libboost1.58 and install libboost1.54 to make XML libraries
  
 - name: Uninstall libboost1.58
@@ -64,12 +63,11 @@
   become: true
   become_user: root
 
-#
-#
-# ADD TRUSTY repo to sources.list to make version 1.54 of BOOST available
-#
-#
-
+- name: Add trusty repo to install older libboost
+  apt_repository:
+  repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
+  state: present
+  
 - name: Install libboost1.54-dev
   apt: pkg=libboost1.54-dev state=present
   become: true
@@ -80,8 +78,6 @@
 
 - name: Make IO target
   command: make bcl2fastq_io chdir="{{ soft_dir }}/bcl2fastq-build"
-
-
 
 
 # Uninstall libboost1.54 and install 1.58 to continue the build
@@ -97,6 +93,7 @@
   become: true
   become_user: root
 
+
 # Continue building
 
 - name: Make all
@@ -104,21 +101,18 @@
   
 - name: Install
   command: make install chdir="{{ soft_dir }}/bcl2fastq-build"
-  
-    
+      
+
 
 
 # Cleanup after the build
 
-
-
-#
-#
-#
-#	REMOVE TRUSTY FROM SOURCES.LIST
-#
-#
-
+- name: Remove trusty repo
+  apt_repository:
+  repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
+  state: absent
+  
+  
 #- name: CHMOD the install dir
 #  file: path={{ soft_dir }}/bcl2fastq-{{ version }} owner={{ ansible_user_id }} group={{ ansible_user_id }} recursive=yes
 
