@@ -1,16 +1,17 @@
 - hosts: all
 
   vars:
-    - source_dir: /software/src
-    - soft_dir: /software/apps
-    - modules_dir: /software/modules
-    - ref_dir: /prod/reference
-    - incoming_data_dir: /prod/incoming
-    - work_dir: /prod/scratch
-    - archive_dir: /prod/archive
-    - test_data_dir: /test/raw_data
-    - test_work_dir: /test/scratch
-    - test_archive_dir: /test/archive
+    - source_dir: /ngs/software/src
+    - soft_dir: /ngs/software/apps
+    - modules_dir: /ngs/software/modules
+    - ref_dir: /ngs/prod/reference
+    #- incoming_data_dir: /prod/incoming
+    - data_dir: /ngs/prod/data_tmp
+    - work_dir: /ngs/prod/scratch
+    - archive_dir: /ngs/prod/archive
+    - test_data_dir: /ngs/test/raw_data
+    - test_work_dir: /ngs/test/scratch
+    - test_archive_dir: /ngs/test/archive
 
   pre_tasks:
     - name: Create necessary dirs
