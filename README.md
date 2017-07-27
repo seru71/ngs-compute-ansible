@@ -1,37 +1,62 @@
+Intro
+--
+The code was forked from https://github.com/MonashBioinformaticsPlatform/bio-ansible and adopted to specific needs of creating an environment 
+for automated execution of bacterial genome assembly pipeline (https://github.com/seru71/zao-bia-pipeline).
+
+
 Requirements
 --
 
-You need a `ansible` installed locally
+VM or container with Ubuntu 16.04. 
+Suggested resources: 
 
-    sudo pip install ansible
-    
-You need to manually download some packages that require license agreements.  See `tarballs/README`
+ - 16 cores
+ - 16GB mem (SPAdes assembly is the most demanding step) 
+ - root disk with 20GB
+ - dedicated partition for results - mounted in /ngs
 
-By default software will be installed to /mnt/software.  So, if you want this to be on a separate mount, set that up before running ansible.
 
-So far this has only been developed on Ubuntu 14.04
-
-Example to run
+Setup
 --
 
-    ansible-playbook -K -s -u powell -i hosts main.yml
+After creating the target VM/container, note its IP address (VMs_IP).
+On another machine, install ansible and sshpass
 
-or for only a specific task
+`apt install -y git ansible sshpass`
 
-    ansible-playbook -K -s -u powell -i hosts main.yml --tags samtools
+Get a copy of this project
+`git clone git@github.com:seru71/ngs-compute-ansible.git`
+`cd ngs-compute-ansible`
 
-or for only a specific host
+Play the book
+`ansible-playbook -K -k -u ngs -s -i [IP_VM] bia-pipeline-env.yml`
 
-    ansible-playbook -K -s -u powell -l bio1 -i hosts main.yml --tags samtools
-
-
-
-Extra files
+Other
 --
 
-There are scripts to download various databases in `scripts/`. These have deliberately not been added to ansible.
+Mounting network drive with input data
 
-Download blast databases
+`ssh ngs@VM
+export CREDENTIALS=/home/ngs/cifs.credentials
+export LOCATION=//location/of/the/drive
+sudo echo -e 'username=username\npassword=mypass' > $CREDENTIALS
+sudo chmod go-rwx $CREDENTIALS
+sudo mount.cifs $LOCATION /mnt/data -o credentials=$CREDENTIALS`
+
+
+
+Credits
+--
+
+Majority of the tasks in the playbook come from https://github.com/MonashBioinformaticsPlatform/bio-ansible
+
+Below is an extract of README from that project:
+   
+ 1. You need to manually download some packages that require license agreements.  See `tarballs/README`
+
+ 2. There are scripts to download various databases in `scripts/`. These have deliberately not been added to ansible.
+
+ 3. Download blast databases
 
     cd /references/blast
     sudo -u sw-installer $(which update_blastdb.pl) --passive --verbose '.*'
