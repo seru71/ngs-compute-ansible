@@ -65,8 +65,8 @@
 
 - name: Add trusty repo to install older libboost
   apt_repository:
-  repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
-  state: present
+    repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
+    state: present
   
 - name: Install libboost1.54-dev
   apt: pkg=libboost1.54-dev state=present
@@ -109,8 +109,8 @@
 
 - name: Remove trusty repo
   apt_repository:
-  repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
-  state: absent
+    repo: deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse
+    state: absent
   
   
 #- name: CHMOD the install dir

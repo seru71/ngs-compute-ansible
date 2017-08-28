@@ -28,8 +28,9 @@
 
 
 # Set up crontab to monitor new runs
-- cron:
-  name: monitor incoming dir
-  min: 0
-  job: {{ soft_dir }}/bia-pipeline/monitor_new_datasets.sh {{incoming_data_dir}}
+- name: Set monitoring job
+  cron:
+    name: monitor incoming dir
+    min: 0
+    job: "{{ soft_dir }}/bia-pipeline/monitor_new_datasets.sh {{incoming_data_dir}}"
 
