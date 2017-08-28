@@ -1,6 +1,7 @@
 - hosts: all
 
-  vars:
+   vars:
+    - username: ngs
     - source_dir: /ngs/software/src
     - soft_dir: /ngs/software/apps
     - modules_dir: /ngs/software/modules
@@ -13,14 +14,22 @@
     - test_work_dir: /ngs/test/scratch
     - test_archive_dir: /ngs/test/archive
 
+
+
   pre_tasks:
   
   - name: set timezone to Europe/Warsaw
     timezone:
       name: Europe/Warsaw
-      
+            
+  - name: create ngs user
+    user:
+        name: {{ username }}
+        comment: "NGS user"
+        group: {{ username }}
+        
   - name: Create necessary dirs
-    file: path={{item}} state=directory mode=ug+rwx group="{{ ansible_user_id }}" owner="{{ ansible_user_id }}"
+    file: path={{item}} state=directory mode=ug+rwx group="{{ username }}" owner="{{ username }}"
     become: true
     become_user: root
     with_items:
@@ -34,6 +43,7 @@
         - "{{test_data_dir}}"
         - "{{test_work_dir}}"
         - "{{test_archive_dir}}"
+
       
   tasks:
     - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
