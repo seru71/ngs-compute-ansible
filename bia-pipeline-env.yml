@@ -14,7 +14,12 @@
     - test_archive_dir: /ngs/test/archive
 
   pre_tasks:
-    - name: Create necessary dirs
+  
+  - name: set timezone to Europe/Warsaw
+      timezone:
+      name: Europe/Warsaw
+      
+  - name: Create necessary dirs
       file: path={{item}} state=directory mode=ug+rwx group="{{ ansible_user_id }}" owner="{{ ansible_user_id }}"
       become: true
       become_user: root
