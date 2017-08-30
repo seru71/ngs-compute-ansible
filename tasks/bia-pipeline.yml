@@ -1,36 +1,40 @@
 # Install dependencies
 
-- name: Update APT cache
-  apt: update_cache=yes cache_valid_time=3600
-  become: true
-  become_user: root
-
-- name: Install packages
-  apt: pkg={{item}} state=present
-  become: true
-  become_user: root
-  with_items:
-    - python-ruffus
-    - python-drmaa
-    - slurm-drmaa1
-
+- name: Install dependencies 
+  block:
+  - apt: update_cache=yes cache_valid_time=3600
+  - apt: pkg={{item}} state=present
+    with_items:
+      - python-ruffus
+      - python-drmaa
+      - slurm-drmaa1
+  #become: true
+  #become_user: root
+  
 
 # Set up env variable from SLURM-DRMAA
 - name: set DRMAA_LIBRARY_PATH env varianble
-  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ansible_user_id}}/.bashrc
+  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ username }}/.bashrc
+  become: yes
+  become_user: "{{ username }}"
 
 
 # Clone pipeline repo
-- git:
+- name: Clone pipeline 
+  git:
     repo: "{{ repo }}"
     dest: "{{ soft_dir }}/bia-pipeline"
     version: "{{ version }}"
+  become: yes
+  become_user: "{{ username }}"
 
 
 # Set up crontab to monitor new runs
 - name: Set monitoring job
   cron:
     name: monitor incoming dir
-    min: 0
+    minute: 0
     job: "{{ soft_dir }}/bia-pipeline/monitor_new_datasets.sh {{incoming_data_dir}}"
+  #become: true
+  #become_user: root
 

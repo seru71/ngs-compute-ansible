@@ -1,14 +1,21 @@
-- name: Download QUAST
-  get_url:
-    url=https://downloads.sourceforge.net/project/quast/quast-{{version}}.tar.gz
-    dest={{source_dir}}/quast-{{version}}.tar.gz
 
-- name: Uncompress Quast
-  unarchive: 
-    src={{ source_dir }}/quast-{{version}}.tar.gz 
-    dest={{ soft_dir }}
-    copy=no
-    creates={{ soft_dir }}/quast-{{version}}/quast.py
+- name: Download and install QUAST
+  block:
+    
+    - name: Download QUAST
+      get_url:
+        url: https://downloads.sourceforge.net/project/quast/quast-{{version}}.tar.gz
+        dest: "{{source_dir}}/quast-{{version}}.tar.gz"
+
+    - name: Uncompress Quast
+      unarchive: 
+        src: "{{ source_dir }}/quast-{{version}}.tar.gz"
+        dest: "{{ soft_dir }}"
+        copy: no
+        creates: "{{ soft_dir }}/quast-{{version}}/quast.py"
+
+  become: yes
+  become_user: "{{ username }}"
 
 #- file: dest="{{modules_dir}}/bio/quast" state=directory mode=0755
 
