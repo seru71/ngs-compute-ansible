@@ -2,18 +2,25 @@
 
 
   vars:
+  
     - username: ngs
+    
     - source_dir: /ngs/software/src
     - soft_dir: /ngs/software/apps
     - modules_dir: /ngs/software/modules
     - ref_dir: /ngs/prod/reference
-    - incoming_data_dir: /mnt/data/miseq_incoming
     #- data_dir: /ngs/prod/data_tmp
     - work_dir: /ngs/prod/scratch
     - archive_dir: /ngs/prod/archive
     - test_data_dir: /ngs/test/raw_data
     - test_work_dir: /ngs/test/scratch
     - test_archive_dir: /ngs/test/archive
+
+    - incoming_data_dir: /mnt/data/miseq_incoming
+    - incoming_dir_NFS_share: //NFS/share
+    - cifs_credentials_file: /root/cifs.credentials
+    - cifs_mount_username: username
+    - cifs_mount_password: password
 
 
   pre_tasks:
@@ -47,8 +54,24 @@
         - "{{test_work_dir}}"
         - "{{test_archive_dir}}"
 
-  - name: Create incoming dir
-    file: path="{{incoming_data_dir}}" state=directory mode="a+rx"
+  - name: Create and mount incoming dir
+    block:
+      - file: path="{{incoming_data_dir}}" state=directory mode="a+rx"
+      
+      - name: save credentials in file (DOES NOT overwrite) 
+        shell: echo "username={{cifs_mount_username}}\npassword={{cifs_mount_password}}" > {{cifs_credentials_file}}
+        args:
+            creates: "{{cifs_credentials_file}}"
+            
+      - name: Mount NFS share
+        mount:
+          path: "{{ incoming_data_dir }}"
+          src: "{{ incoming_dir_NFS_share }}"
+          fstype: cifs
+          opts: "credentials=/root/cifs.credentials,uid={{ username }},gid={{ username }}"
+          state: mounted
+        ignore_errors: yes
+    tags: mount
 
       
   tasks:
