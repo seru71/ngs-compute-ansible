@@ -37,6 +37,7 @@
   - name: create ngs user
     user:
       name: "{{ username }}"
+      shell: /bin/bash
       comment: "NGS user"
       group: "{{ username }}"
       state: present
