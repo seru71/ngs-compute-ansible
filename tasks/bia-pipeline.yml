@@ -13,11 +13,14 @@
   
 
 # Set up env variable from SLURM-DRMAA
-- name: set DRMAA_LIBRARY_PATH env varianble
-  shell: echo 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1' >> /home/{{ username }}/.bashrc
+- name: set DRMAA_LIBRARY_PATH env variable
+  lineinfile:
+      path: /home/{{ username }}/.profile
+      line: 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1'
+      create: yes
   become: yes
   become_user: "{{ username }}"
-
+      
 
 # Clone pipeline repo
 - name: Clone pipeline 
