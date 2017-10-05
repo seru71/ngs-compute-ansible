@@ -8,8 +8,6 @@
       - python-ruffus
       - python-drmaa
       - slurm-drmaa1
-  #become: true
-  #become_user: root
   
 
 # Set up env variable from SLURM-DRMAA
@@ -19,7 +17,7 @@
       line: 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1'
       create: yes
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
       
 
 # Clone pipeline repo
@@ -29,15 +27,7 @@
     dest: "{{ soft_dir }}/bia-pipeline"
     version: "{{ version }}"
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
 
 
-# Set up crontab to monitor new runs
-- name: Set monitoring job
-  cron:
-    name: monitor incoming dir
-    minute: 0
-    job: "{{ soft_dir }}/bia-pipeline/monitor_new_datasets.sh {{incoming_data_dir}}"
-  #become: true
-  #become_user: root
 

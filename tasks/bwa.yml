@@ -1,6 +1,6 @@
 
 - name: Download and install BWA
-  block
+  block:
   
     - name: Download BWA
       get_url:

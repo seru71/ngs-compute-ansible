@@ -1,0 +1,137 @@
+- hosts: all
+
+
+  vars:
+  
+    - ngs_user: ngs
+    - ngs_group: ngs
+    - username: "{{ ngs_user }}"
+    
+    - source_dir: /ngs/software/src
+    - soft_dir: /ngs/software/apps
+    - modules_dir: /ngs/software/modules
+    - ref_dir: /ngs/reference
+
+#    - incoming_data_dir: /mnt/data/miseq_incoming
+#    - incoming_dir_NFS_share: //NFS/share
+#    - cifs_credentials_file: /root/cifs.credentials
+#    - cifs_mount_username: username
+#    - cifs_mount_password: password
+
+
+  pre_tasks:
+  
+  - name: set timezone to Europe/Warsaw
+    timezone:
+      name: Europe/Warsaw
+
+  - name: create ngs group
+    group:
+      name: "{{ ngs_user }}"
+      state: present
+
+  - name: create ngs user
+    user:
+      name: "{{ ngs_user }}"
+      shell: /bin/bash
+      group: "{{ ngs_group }}"
+      state: present
+
+  - name: create user
+    user:
+      name: "abomba"
+      shell: /bin/bash
+      group: "{{ ngs_group }}"
+      state: present
+
+  - name: add public key
+    lineinfile:
+      path: /home/abomba/.ssh/authorized_keys
+      line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpvdk3hf2oU3VxMob5O5jFFFw5TGaK8BbG/fX36S4pTV6sq8khANZtBoTIpNz07U88AgMLFuuuHtwwWZzKnhPkSbhru8is9Y5X88hCYQ2aNYkIXEoFtGMW9CDAmvRJlrozj8wNCLPjsr2tCTbkFZNoOqQuvd+53zy3obNrPv83DCT0fFGrtPjoRUB8pcJR4PKRod587x/8rqY985XvzJoHGjLCNB8H7zi5yK16Qee6EQvNXrQs9N0Ed+q6AFUME169+IMP54Ocl16Q/DTICgmSQRIaNxrqUArHYvunRgc/jwRK0yKevP/2+bxYq8EvXqf+q3igKfXrIX+l2S5hJeLt'
+      create: yes
+      
+  - name: create user
+    user:
+      name: "pawels"
+      shell: /bin/bash
+      group: "{{ ngs_group }}"
+      state: present
+
+  - name: add public key
+    lineinfile:
+      path: /home/pawels/.ssh/authorized_keys
+      line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGU9JoTgmK0nTGB885Y3C37gI2draYM52sMyTmAllQ9wOtm9PxtmrxNdheweTMsVmnuJDuzELz97YIssot0E9qcGVinSL9ocDzPyJEklr1QWZ4mOJXqAXQGadKoHe+r+fCUjiWPQcTmr5UF3XJRa7xwqvLQs2mgRLAvmGdff6h4MvlrVXI1OPs1C/Dt5Yfzs/XROEv57qX9Fk9m+ok8Z8OcsquOX6D9aLOmmukQU6BtACPevcQ02OjsCdeHr9lDNdULU8TA9hWMBA0lAym0FmCSrZIQWGjvgeQTEpEPTQhI8mqyuBUn77QBtweR15TKHoOTCKFuZgPnbZ6CweXTduP'
+      create: yes
+
+
+  - name: Create necessary dirs
+    file: path={{item}} state=directory mode=ug+rwx group="{{ ngs_group }}" owner="{{ ngs_user }}"
+    with_items:
+        - "{{source_dir}}"
+        - "{{soft_dir}}"
+        - "{{modules_dir}}"
+        - "{{ref_dir}}"
+
+  #- name: Create and mount incoming dir
+  #  block:
+  #    - file: path="{{incoming_data_dir}}" state=directory mode="a+rx"
+  #    
+  #    - name: save credentials in file (DOES NOT overwrite) 
+  #      shell: echo "username={{cifs_mount_username}}\npassword={{cifs_mount_password}}" > {{cifs_credentials_file}}
+  #      args:
+  #          creates: "{{cifs_credentials_file}}"
+  #          
+  #    - name: Mount NFS share
+  #      mount:
+  #        path: "{{ incoming_data_dir }}"
+  #        src: "{{ incoming_dir_NFS_share }}"
+  #        fstype: cifs
+  #        opts: "credentials=/root/cifs.credentials,uid={{ username }},gid={{ username }}"
+  #        state: mounted
+  #      ignore_errors: yes
+  #  tags: mount
+
+      
+  tasks:
+  
+    - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
+    
+    - include: tasks/java.yml 
+    #- include: tasks/java-link.yml tags=java-link
+
+    - include: tasks/bcl2fastq.yml 
+      tags: bcl2fastq 
+      version: 2.19.1
+      
+    - include: tasks/fastqc.yml 
+      tags: fastqc 
+      version: 0.11.5
+      
+    - include: tasks/bbmap.yml 
+      tags: bbmap 
+      version: 36.62
+      
+    - include: tasks/trimmomatic.yml 
+      tags: trimmomatic 
+      version: 0.36
+    
+    - include: tasks/SPAdes.yml 
+      tags: spades 
+      version: 3.9.0
+      
+    - include: tasks/quast.yml
+      tags: quast 
+      version: 4.5
+      
+    - include: tasks/bia-pipeline.yml 
+      tags: biapipeline 
+      repo: https://github.com/seru71/zao-bia-pipeline.git 
+      version: HEAD
+    
+    - include: tasks/bwa.yml tags=bwa
+    - include: tasks/htslib.yml tags=htslib version=1.3.1
+    - include: tasks/samtools.yml tags=samtools version=1.3.1 htslib_version=1.3.1
+    - include: tasks/bcftools.yml tags=bcftools version=1.2
+    - include: tasks/vcftools.yml tags=vcftools version=0.1.12b
+
+   
