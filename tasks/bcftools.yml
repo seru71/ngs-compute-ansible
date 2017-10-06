@@ -1,11 +1,11 @@
 
 - name: Setup bcftools
   block:
-  
-    - Download bcftools
+
+    - name: Download bcftools
       get_url:
-        url=https://github.com/samtools/bcftools/releases/download/{{version}}/bcftools-{{version}}.tar.bz2
-        dest={{source_dir}}/bcftools-{{version}}.tar.bz2
+        url: https://github.com/samtools/bcftools/releases/download/{{version}}/bcftools-{{version}}.tar.bz2
+        dest: "{{source_dir}}/bcftools-{{version}}.tar.bz2"
 
     - name: Uncompress bcftools
       unarchive: 
@@ -15,12 +15,12 @@
         creates: "{{ source_dir }}/bcftools-{{version}}/README"
 
     - name: Build and Install bcftools
-      shell: cd {{ source_dir }}/bcftools-{{version}}; make install prefix="{{ soft_dir }}/bcftools-{{version}}"
+      shell: cd {{ source_dir }}/bcftools-{{version}}; ./configure prefix="{{ soft_dir }}/bcftools-{{version}} --with-htslib={{ soft_dir }}/htslib-{{htslib_version}} && make && make install"
       args:
         creates: "{{ soft_dir }}/bcftools-{{version}}/bin/bcftools"
   
   become: yes
-  user: "{{ ngs_user }}"
+  become_user: "{{ ngs_user }}"
 
 #- file: dest="{{modules_dir}}/bio/bcftools" state=directory mode=0755
 

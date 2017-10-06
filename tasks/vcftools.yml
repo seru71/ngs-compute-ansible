@@ -5,19 +5,19 @@
     - name: Download vcftools
       get_url:
         url=https://github.com/vcftools/vcftools/releases/download/v{{ version }}/vcftools-{{ version }}.tar.gz
-        dest={{source_dir}}/vcftools_{{version}}.tar.gz
+        dest={{source_dir}}/vcftools-{{version}}.tar.gz
 
     - name: Uncompress vcftools
       unarchive: 
-        src: "{{ source_dir }}/vcftools_{{version}}.tar.gz"
+        src: "{{ source_dir }}/vcftools-{{version}}.tar.gz"
         dest: "{{ source_dir }}"
         copy: no
-        creates: "{{ source_dir }}//vcftools_{{version}}/README.txt"
+        creates: "{{ source_dir }}/vcftools-{{version}}/README.txt"
 
     - name: Build and Install vcftools
-      shell: cd {{ source_dir }}/vcftools_{{version}}; make install PREFIX="{{ soft_dir }}/vcftools_{{version}}"
+      shell: cd {{ source_dir }}/vcftools-{{version}}; ./configure --prefix="{{ soft_dir }}/vcftools-{{version}}" && make && make install
       args:
-        creates: "{{ soft_dir }}/vcftools_{{version}}/bin/vcftools"
+        creates: "{{ soft_dir }}/vcftools-{{version}}/bin/vcftools"
 
   become: yes
   become_user: "{{ ngs_user }}"

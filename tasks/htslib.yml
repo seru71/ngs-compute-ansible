@@ -4,8 +4,8 @@
   
     - name: Download htslib
       get_url:
-        url=https://github.com/samtools/htslib/archive/{{version}}.tar.gz
-        dest={{source_dir}}/htslib-{{version}}.tar.gz
+        url: https://github.com/samtools/htslib/archive/{{version}}.tar.gz
+        dest: "{{source_dir}}/htslib-{{version}}.tar.gz"
 
     - name: Uncompress htslib
       unarchive: 
@@ -20,7 +20,7 @@
         creates: "{{ soft_dir }}/htslib-{{version}}/bin/tabix"
         
   become: yes
-  user: "{{ ngs_user }}"
+  become_user: "{{ ngs_user }}"
   
   
 #- file: dest="{{modules_dir}}/bio/htslib" state=directory mode=0755

@@ -25,6 +25,7 @@
     - libncurses5-dev
     - liblzma-dev
     - libblas-dev    
+    - libbz2-dev
     - libcurl4-openssl-dev    
     - pigz
 #    - python-dev

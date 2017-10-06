@@ -33,10 +33,12 @@
 
   - name: create user
     user:
-      name: "abomba"
+      name: abomba
       shell: /bin/bash
-      group: "{{ ngs_group }},sudo"
+      group: "{{ ngs_group }}"
       state: present
+      groups: sudo 
+      append: yes
 
   - name: add public key
     lineinfile:
@@ -46,13 +48,14 @@
     become: yes
     become_user: abomba
 
-      
   - name: create user
     user:
-      name: "pawels"
+      name: pawels
       shell: /bin/bash
-      group: "{{ ngs_group }},sudo"
+      group: "{{ ngs_group }}"
       state: present
+      groups: sudo
+      append: yes
 
   - name: add public key
     lineinfile:
@@ -65,7 +68,7 @@
 
 
   - name: Create necessary dirs
-    file: path={{item}} state=directory mode=ug+rwx group="{{ ngs_group }}" owner="{{ ngs_user }}"
+    file: path={{item}} state=directory mode=u+rwx,g+rws group="{{ ngs_group }}" owner="{{ ngs_user }}"
     with_items:
         - "{{source_dir}}"
         - "{{soft_dir}}"
@@ -98,16 +101,23 @@
       tags: bcl2fastq 
       version: 2.19.1
       
-    - include: tasks/bcftools.yml tags=bcftools version=1.6
+    - include: tasks/htslib.yml 
+      tags: htslib 
+      version: 1.6
+
+    - include: tasks/bcftools.yml 
+      tags: bcftools 
+      version: 1.6 
+      htslib_version: 1.6
     
-    - include: tasks/bwa.yml tags=bwa version=0.7.15
+    - include: tasks/bwa.yml 
+      tags: bwa 
+      version: 0.7.15
     
     - include: tasks/fastqc.yml 
       tags: fastqc 
       version: 0.11.5
       
-    - include: tasks/htslib.yml tags=htslib version=1.6
-    
     - include: tasks/trimmomatic.yml 
       tags: trimmomatic 
       version: 0.36
@@ -122,11 +132,16 @@
       
     - include: tasks/bia-pipeline.yml 
       tags: biapipeline 
-      repo: https://github.com/seru71/zao-bia-pipeline.git 
+      repo: https://github.com/seru71/bia-pipeline.git 
       version: HEAD
     
-    - include: tasks/samtools.yml tags=samtools version=1.6 htslib_version=1.6
+    - include: tasks/samtools.yml 
+      tags: samtools 
+      version: 1.6 
+      htslib_version: 1.6
     
-    - include: tasks/vcftools.yml tags=vcftools version=0.1.15
+    - include: tasks/vcftools.yml 
+      tags: vcftools 
+      version: 0.1.15
 
    

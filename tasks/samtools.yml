@@ -20,7 +20,7 @@
         creates: "{{ soft_dir }}/samtools-{{version}}/bin/samtools"
 
   become: yes
-  user: "{{ ngs_user }}"
+  become_user: "{{ ngs_user }}"
   
   
 #- file: dest="{{modules_dir}}/bio/samtools" state=directory mode=0755
