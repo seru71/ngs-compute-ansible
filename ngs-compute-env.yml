@@ -12,12 +12,6 @@
     - modules_dir: /ngs/software/modules
     - ref_dir: /ngs/reference
 
-#    - incoming_data_dir: /mnt/data/miseq_incoming
-#    - incoming_dir_NFS_share: //NFS/share
-#    - cifs_credentials_file: /root/cifs.credentials
-#    - cifs_mount_username: username
-#    - cifs_mount_password: password
-
 
   pre_tasks:
   
@@ -41,7 +35,7 @@
     user:
       name: "abomba"
       shell: /bin/bash
-      group: "{{ ngs_group }}"
+      group: "{{ ngs_group }},sudo"
       state: present
 
   - name: add public key
@@ -49,12 +43,15 @@
       path: /home/abomba/.ssh/authorized_keys
       line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpvdk3hf2oU3VxMob5O5jFFFw5TGaK8BbG/fX36S4pTV6sq8khANZtBoTIpNz07U88AgMLFuuuHtwwWZzKnhPkSbhru8is9Y5X88hCYQ2aNYkIXEoFtGMW9CDAmvRJlrozj8wNCLPjsr2tCTbkFZNoOqQuvd+53zy3obNrPv83DCT0fFGrtPjoRUB8pcJR4PKRod587x/8rqY985XvzJoHGjLCNB8H7zi5yK16Qee6EQvNXrQs9N0Ed+q6AFUME169+IMP54Ocl16Q/DTICgmSQRIaNxrqUArHYvunRgc/jwRK0yKevP/2+bxYq8EvXqf+q3igKfXrIX+l2S5hJeLt'
       create: yes
+    become: yes
+    become_user: abomba
+
       
   - name: create user
     user:
       name: "pawels"
       shell: /bin/bash
-      group: "{{ ngs_group }}"
+      group: "{{ ngs_group }},sudo"
       state: present
 
   - name: add public key
@@ -62,6 +59,9 @@
       path: /home/pawels/.ssh/authorized_keys
       line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGU9JoTgmK0nTGB885Y3C37gI2draYM52sMyTmAllQ9wOtm9PxtmrxNdheweTMsVmnuJDuzELz97YIssot0E9qcGVinSL9ocDzPyJEklr1QWZ4mOJXqAXQGadKoHe+r+fCUjiWPQcTmr5UF3XJRa7xwqvLQs2mgRLAvmGdff6h4MvlrVXI1OPs1C/Dt5Yfzs/XROEv57qX9Fk9m+ok8Z8OcsquOX6D9aLOmmukQU6BtACPevcQ02OjsCdeHr9lDNdULU8TA9hWMBA0lAym0FmCSrZIQWGjvgeQTEpEPTQhI8mqyuBUn77QBtweR15TKHoOTCKFuZgPnbZ6CweXTduP'
       create: yes
+    become: yes
+    become_user: pawels
+   
 
 
   - name: Create necessary dirs
@@ -72,26 +72,7 @@
         - "{{modules_dir}}"
         - "{{ref_dir}}"
 
-  #- name: Create and mount incoming dir
-  #  block:
-  #    - file: path="{{incoming_data_dir}}" state=directory mode="a+rx"
-  #    
-  #    - name: save credentials in file (DOES NOT overwrite) 
-  #      shell: echo "username={{cifs_mount_username}}\npassword={{cifs_mount_password}}" > {{cifs_credentials_file}}
-  #      args:
-  #          creates: "{{cifs_credentials_file}}"
-  #          
-  #    - name: Mount NFS share
-  #      mount:
-  #        path: "{{ incoming_data_dir }}"
-  #        src: "{{ incoming_dir_NFS_share }}"
-  #        fstype: cifs
-  #        opts: "credentials=/root/cifs.credentials,uid={{ username }},gid={{ username }}"
-  #        state: mounted
-  #      ignore_errors: yes
-  #  tags: mount
-
-      
+       
   tasks:
   
     - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
