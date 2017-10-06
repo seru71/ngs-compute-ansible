@@ -117,7 +117,11 @@
     - include: tasks/fastqc.yml 
       tags: fastqc 
       version: 0.11.5
-      
+    
+    - include: tasks/freebayes.yml 
+      tags: freebayes
+      version: 1.1.0
+  
     - include: tasks/trimmomatic.yml 
       tags: trimmomatic 
       version: 0.36
