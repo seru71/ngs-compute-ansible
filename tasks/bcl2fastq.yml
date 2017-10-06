@@ -20,7 +20,7 @@
         copy: no
         creates: "{{ source_dir }}/bcl2fastq"
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
 
 
 # Install libboost1.58
@@ -43,7 +43,7 @@
   args: 
     chdir: "{{ source_dir }}/bcl2fastq-build"
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
 
  
 # Uninstall libboost1.58 and install libboost1.54 to make XML libraries
@@ -63,7 +63,7 @@
 - name: Make IO target
   command: make bcl2fastq_io chdir="{{ source_dir }}/bcl2fastq-build"
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
 
 
 # Uninstall libboost1.54 and install 1.58 to continue the build
@@ -81,7 +81,7 @@
     - command: make chdir="{{ source_dir }}/bcl2fastq-build"
     - command: make install chdir="{{ source_dir }}/bcl2fastq-build"
   become: yes
-  become_user: "{{ username }}"    
+  become_user: "{{ ngs_user }}"    
 
 # Cleanup after the build
 

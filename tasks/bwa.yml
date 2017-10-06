@@ -4,22 +4,22 @@
   
     - name: Download BWA
       get_url:
-        url: http://sourceforge.net/projects/bio-bwa/files/bwa-0.7.12.tar.bz2
-        dest: "{{source_dir}}/bwa-0.7.12.tar.bz2"
+        url: https://github.com/lh3/bwa/releases/download/v{{ version }}/bwa-{{ version }}.tar.bz2
+        dest: "{{source_dir}}/bwa-{{ version }}.tar.bz2"
 
     - name: Uncompress BWA
       unarchive:
-        src: "{{ source_dir }}/bwa-0.7.12.tar.bz2"
+        src: "{{ source_dir }}/bwa-{{ version }}.tar.bz2"
         dest: "{{ source_dir }}"
         copy: no
 
     - name: Build and Install BWA
-      shell: cd {{ source_dir }}/bwa-0.7.12; make && mkdir -p "{{ soft_dir }}/BWA-0.7.12/bin" && cp bwa qualfa2fq.pl xa2multi.pl "{{ soft_dir }}/BWA-0.7.12/bin"
+      shell: cd {{ source_dir }}/bwa-{{ version }}; make && mkdir -p "{{ soft_dir }}/bwa-{{ version }}/bin" && cp bwa qualfa2fq.pl xa2multi.pl "{{ soft_dir }}/bwa-{{ version }}/bin"
       args:
-        creates: "{{ soft_dir }}/BWA-0.7.12/bin/bwa"
+        creates: "{{ soft_dir }}/bwa-{{ version }}/bin/bwa"
         
   become: yes
-  become_user: "{{ username }}"
+  become_user: "{{ ngs_user }}"
 
 
 
