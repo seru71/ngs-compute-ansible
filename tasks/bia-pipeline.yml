@@ -13,11 +13,9 @@
 # Set up env variable from SLURM-DRMAA
 - name: set DRMAA_LIBRARY_PATH env variable
   lineinfile:
-      path: /home/{{ username }}/.profile
+      path: /etc/environment
       line: 'export DRMAA_LIBRARY_PATH=/usr/lib/slurm-drmaa/lib/libdrmaa.so.1'
       create: yes
-  become: yes
-  become_user: "{{ ngs_user }}"
       
 
 # Clone pipeline repo
