@@ -20,6 +20,7 @@
     - r-base-core
     - curl
     - htop
+    - cython
     - python-pip
     - python-dev
     - python-matplotlib

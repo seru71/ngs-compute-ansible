@@ -1,0 +1,28 @@
+
+
+- name: Install dependencies
+  apt: pkg={{item}} state=present
+  with_items:
+    - python-matplotlib
+    - python-numpy
+    - cython
+    
+    
+#
+#
+# When paths are set to samtools, bcftools, bwa, and blastn and muscle are installed locally, this will be obsolete
+#    
+- name: Install bioinfo dependencies
+  apt: pkg={{item}} state=present
+  with_items:   
+    - bwa
+    - ncbi-blast+
+    - samtools
+    - muscle
+    
+    
+- name: Install python VCF-kit
+  pip: 
+    name: VCF-kit
+    version: "{{ version }}"
+      
