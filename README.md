@@ -29,7 +29,7 @@ Install ansible (on your machine).
 Clone this repo and play the book
 `git clone git@github.com:seru71/ngs-compute-ansible.git`
 `cd ngs-compute-ansible`
-`ansible-playbook -u root --private-key=~/.ssh/id_rsa -i [IP_VM], bia-pipeline-env.yml`
+`ansible-playbook -u root --private-key=~/.ssh/id_rsa -i [IP_VM], ngs-compute-env.yml`
 
 
 Credits

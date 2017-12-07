@@ -13,7 +13,7 @@
     - ref_dir: /ngs/reference
 
     - ngs_share_dir: /mnt/ngs_data
-    - ngs_share_dir_source: FILE_SERVER:PATH
+    - ngs_share_dir_source: FILE_SERVER:/storage/data
 
   pre_tasks:
   
@@ -24,6 +24,7 @@
   - name: create ngs group
     group:
       name: "{{ ngs_user }}"
+      gid: 1000
       state: present
 
   - name: create ngs user
@@ -84,7 +85,6 @@
       src: "{{ ngs_share_dir_source }}"
       fstype: nfs
       state: mounted
-      ignore_errors: yes
     tags: mount
 
     
