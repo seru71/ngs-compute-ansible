@@ -1,54 +1,41 @@
 Intro
 --
-The code was forked from https://github.com/MonashBioinformaticsPlatform/bio-ansible and adopted to specific needs of creating an environment 
-for automated execution of bacterial genome assembly pipeline (https://github.com/seru71/zao-bia-pipeline).
+The code was forked from https://github.com/MonashBioinformaticsPlatform/bio-ansible and adopted to specific needs of 
+creating a generic bioinformatics compute environment for ZAO@PIWet
 
 
 Requirements
 --
 
-VM or container with Ubuntu 16.04. 
-Suggested resources: 
-
- - 16 cores
- - 16GB mem (SPAdes assembly is the most demanding step) 
- - root disk with 20GB
- - dedicated partition for results - mounted in /ngs
+VM or container with Ubuntu 16.04 and some GBs of root disc space.
+A large disc dedicated to NGS data and results is recommended and expected to be mounted in /ngs.
+And of course sufficient number of cores and amount of RAM for your analyses.
 
 
 Setup
 --
 
-After creating the target VM/container, note its IP address (VMs_IP).
-On another machine, install ansible and sshpass
+After creating the target VM/container, SSH to the VM and add your public key to /root/.authorized_keys
+Alternatively install (on your machine) sshpass for pass-based SSH:
 
-`apt install -y git ansible sshpass`
+`apt install -y git sshpass`
 
-Get a copy of this project
+Make sure that Python is installed on the VM, and note its IP address (IP_VM). 
+
+Install ansible (on your machine).
+
+`apt install -y git ansible`
+
+Clone this repo and play the book
 `git clone git@github.com:seru71/ngs-compute-ansible.git`
 `cd ngs-compute-ansible`
-
-Play the book
-`ansible-playbook -K -k -u ngs -s -i [IP_VM] bia-pipeline-env.yml`
-
-Other
---
-
-Mounting network drive with input data
-
-`ssh ngs@VM
-export CREDENTIALS=/home/ngs/cifs.credentials
-export LOCATION=//location/of/the/drive
-sudo echo -e 'username=username\npassword=mypass' > $CREDENTIALS
-sudo chmod go-rwx $CREDENTIALS
-sudo mount.cifs $LOCATION /mnt/data -o credentials=$CREDENTIALS`
-
+`ansible-playbook -u root --private-key=~/.ssh/id_rsa -i [IP_VM], bia-pipeline-env.yml`
 
 
 Credits
 --
 
-Majority of the tasks in the playbook come from https://github.com/MonashBioinformaticsPlatform/bio-ansible
+99% of the tasks in the playbook come from https://github.com/MonashBioinformaticsPlatform/bio-ansible
 
 Below is an extract of README from that project:
    
