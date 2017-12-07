@@ -12,6 +12,8 @@
     - modules_dir: /ngs/software/modules
     - ref_dir: /ngs/reference
 
+    - ngs_share_dir: /mnt/ngs_data
+    - ngs_share_dir_source: FILE_SERVER:PATH
 
   pre_tasks:
   
@@ -27,6 +29,7 @@
   - name: create ngs user
     user:
       name: "{{ ngs_user }}"
+      uid: 1000
       shell: /bin/bash
       group: "{{ ngs_group }}"
       state: present
@@ -66,7 +69,6 @@
     become_user: pawels
    
 
-
   - name: Create necessary dirs
     file: path={{item}} state=directory mode=u+rwx,g+rws group="{{ ngs_group }}" owner="{{ ngs_user }}"
     with_items:
@@ -76,6 +78,16 @@
         - "{{ref_dir}}"
 
        
+  - name: Mount NFS share for results
+    mount:
+      path: "{{ ngs_share_dir }}"
+      src: "{{ ngs_share_dir_source }}"
+      fstype: nfs
+      state: mounted
+      ignore_errors: yes
+    tags: mount
+
+    
   tasks:
     
     #
