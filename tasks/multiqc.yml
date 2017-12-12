@@ -1,0 +1,12 @@
+- name: Clone MultiQC repo 
+  git:
+    repo: https://github.com/ewels/MultiQC.git
+    dest: "{{ source_dir }}/MultiQC"
+    version: "{{ version }}"
+  become: yes
+  become_user: "{{ ngs_user }}"
+
+- name: Install MultiQC
+  shell: "cd {{ source_dir }}/MultiQC; python setup.py install"
+  args:
+    creates: /usr/local/bin/multiqc
