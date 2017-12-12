@@ -7,9 +7,11 @@ creating a generic bioinformatics compute environment for ZAO@PIWet
 Requirements
 --
 
-VM or container with Ubuntu 16.04 and some GBs of root disc space.
-A large disc dedicated to NGS data and results is recommended and expected to be mounted in /ngs.
-And of course sufficient number of cores and amount of RAM for your analyses.
+ 1. VM or container with Ubuntu 16.04 and some GBs of root disc space. Bioinfo apps are installed in /ngs/software and reference in /ngs/reference
+ 
+ 2. A large disc dedicated to NGS data and results, e.g. mounted to /ngs
+ 
+ 3. And of course sufficient number of cores and GBs of RAM for your analyses.
 
 
 Setup
