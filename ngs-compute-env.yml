@@ -96,6 +96,9 @@
   
     - include: tasks/bia-pipeline-common-packages.yml tags=biacommon
     
+    - include: tasks/qc_webui.yml
+      tags: qc_webui
+    
     - include: tasks/java.yml 
     #- include: tasks/java-link.yml tags=java-link
 

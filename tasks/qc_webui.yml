@@ -1,0 +1,23 @@
+
+- name: Install Apache
+  apt: pkg=apache2 state=present
+
+- name: removed default index.html
+  shell: " > /var/www/html/index.html "
+
+- name: Create ngs_qc dir
+  file: path=/var/www/html/ngs_qc state=directory mode=u+rwx,g+rws group="{{ ngs_group }}" owner="{{ ngs_user }}"
+
+- name: Link QC dirs
+  shell: "cd /var/www/html/ngs_qc; for d in {{ ngs_share_dir }}/miseq_results/*; do if [ ! -L `basename $d` ]; then ln -s $d/qc `basename $d`; fi; done"
+  become: yes
+  become_user: "{{ ngs_user }}"
+
+# Set up crontab to monitor new runs
+- name: Set monitoring job
+  cron:
+    name: monitor new QC dirs
+    hour: 7
+    job: "for d in `find {{ ngs_share_dir }}/miseq_results/* -maxdepth 0 -mtime 1`; do if [ ! -L /var/www/html/ngs_qc/`basename $d` ]; then ln -s $d/qc /var/www/html/ngs_qc/`basename $d`; fi; done"
+  become: yes
+  become_user: "{{ ngs_user }}"
